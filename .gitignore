@@ -102,3 +102,16 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+/.idea
+/.idea/workspace.xml
+.idea/workspace.xml
+/node_modules
+Homestead.yaml
+Homestead.json
+.env
+/chapter_07/data/E2006.train
+/.idea/*
+
+*.pyc
+*pycache*
+/*/__pycache__/

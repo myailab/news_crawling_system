@@ -7,6 +7,7 @@
 import time
 import pymysql
 
+
 class NewsCrawlingSystemPipeline(object):
     def __init__(self):
         self.connect = pymysql.connect(
@@ -19,9 +20,7 @@ class NewsCrawlingSystemPipeline(object):
         )
 
     def process_item(self, item, spider):
-        print(item)
         self.insert_news(item)
-        print(item)
         return item
 
     def insert_news(self, items):
@@ -33,21 +32,22 @@ class NewsCrawlingSystemPipeline(object):
         """
         cur = self.connect.cursor()  # 获取游标
         # 创建或更新时间
-        create_or_update_time = time.strftime("%Y-%m-%d")
         website_id = 1
+        create_or_update_time = time.strftime("%Y-%m-%d %H:%M:%S")
 
         # 查询对应的staff_md5是否存在,如果存在,则不插入,如果不存在,则插入
         query_sql = "select id from news_info where news_md5='%s'"
         effect_row = cur.execute(query_sql % items['news_md5'])
         if effect_row == 0:
-            insert_sql = "INSERT INTO news_info (news_md5, title, news_date, source, body, create_time, website_id) " \
-                         "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')"
+            insert_sql = "INSERT INTO news_info (news_md5, title, news_date, source, body, create_time, website_id, category)" \
+                         "VALUES ('%s' ,'%s', '%s', '%s', '%s', '%s', '%d', '%s')"
             try:
                 cur.execute(insert_sql % (items['news_md5'], items['title'], items['date_time'], items['news_source'],
-                                          items['news_body'], create_or_update_time, website_id))
+                                          items['news_body'], create_or_update_time, website_id, items['category']))
                 # 提交
                 self.connect.commit()
-            except:
+            except Exception as ex:
+                print(ex)
                 # 回滚
                 self.connect.rollback()
                 pass

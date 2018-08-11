@@ -18,4 +18,5 @@ class NewsCrawlingSystemItem(scrapy.Item):
     artical_title = scrapy.Field()
     artical_body = scrapy.Field()
     news_md5 = scrapy.Field()
+    category = scrapy.Field()
     pass
